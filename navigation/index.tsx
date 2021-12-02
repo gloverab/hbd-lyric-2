@@ -3,28 +3,49 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
+import 'react-native-gesture-handler';
 import { FontAwesome } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
+import CustomContext, { initialState, reducer } from '../components/reducers/main';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
+import BirthdayLyricsScreen from '../screens/BirthdayLyricsScreen';
+import InputAgeScreen from '../screens/InputAgeScreen';
+import HowOldLyricsScreen from '../screens/HowOldLyricsScreen';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import InputNameScreen from '../screens/InputNameScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import Mission from '../screens/Mission';
+import Preferences from '../screens/Preferences';
+
+const Drawer = createDrawerNavigator();
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+  const [globalState, globalDispatch ] = React.useReducer(reducer, initialState);
+
+  const providerState = {
+    globalState,
+    globalDispatch
+  }
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
+      <CustomContext.Provider value={providerState}>
+        <Drawer.Navigator initialRouteName="Home">
+          <Drawer.Screen name="Create" component={RootNavigator} />
+          <Drawer.Screen name="Preferences" component={Preferences} />
+          <Drawer.Screen name="Mission" component={Mission} />
+        </Drawer.Navigator>
+      </CustomContext.Provider>
     </NavigationContainer>
   );
 }
@@ -38,7 +59,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Root" component={StackNav} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -47,53 +68,15 @@ function RootNavigator() {
   );
 }
 
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
-
-function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
+function StackNav() {
   return (
-    <BottomTab.Navigator
-      initialRouteName="TabOne"
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
-      <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
-      />
-      <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
-  );
+    <Stack.Navigator>
+      <Stack.Screen name="InputName" options={{ headerShown: false }} component={InputNameScreen}  />
+      <Stack.Screen name="BirthdayLyrics" component={BirthdayLyricsScreen} options={{ title: 'Happy Birthday Lyrics' }} />
+      <Stack.Screen name="HowOldInput" component={InputAgeScreen} options={{ title: 'Enter Age' }} />
+      <Stack.Screen name="HowOldLyrics" component={HowOldLyricsScreen} options={{ title: 'How Old Are You Now Lyrics' }} />
+    </Stack.Navigator>
+  )
 }
 
 /**
