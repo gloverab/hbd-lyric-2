@@ -1,5 +1,4 @@
-# hbd-lyric-2
-React Native experiment/joke. Generate lyrics to Happy Birthday using any name.
+React Native experiment/joke. Generate lyrics to Happy Birthday using any name. Generate a PDF of the lyrics and airdrop it to everyone at the birthday party.
 
 # Has this ever happened to you?
 
