@@ -5,15 +5,14 @@
  */
 import 'react-native-gesture-handler';
 import { FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable, TouchableOpacity } from 'react-native';
 import CustomContext, { initialState, reducer } from '../components/reducers/main';
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
 import BirthdayLyricsScreen from '../screens/BirthdayLyricsScreen';
 import InputAgeScreen from '../screens/InputAgeScreen';
 import HowOldLyricsScreen from '../screens/HowOldLyricsScreen';
@@ -24,6 +23,7 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../typ
 import LinkingConfiguration from './LinkingConfiguration';
 import Mission from '../screens/Mission';
 import Preferences from '../screens/Preferences';
+import { useNavigation } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
@@ -41,7 +41,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <CustomContext.Provider value={providerState}>
         <Drawer.Navigator initialRouteName="Home">
-          <Drawer.Screen name="Create" component={RootNavigator} />
+          <Drawer.Screen options={{ headerShown: false }} name="Create" component={RootNavigator} />
           <Drawer.Screen name="Preferences" component={Preferences} />
           <Drawer.Screen name="Mission" component={Mission} />
         </Drawer.Navigator>
@@ -69,9 +69,23 @@ function RootNavigator() {
 }
 
 function StackNav() {
+  const navigation = useNavigation();
   return (
     <Stack.Navigator>
-      <Stack.Screen name="InputName" options={{ headerShown: false }} component={InputNameScreen}  />
+      <Stack.Screen
+        name="InputName"
+        options={{
+          headerLeft: () => (
+            <TabBarIcon
+              name='menu'
+              color='#ffffff'
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+            />
+          ),
+          title: 'Generate Lyrics'
+        }}
+        component={InputNameScreen}
+      />
       <Stack.Screen name="BirthdayLyrics" component={BirthdayLyricsScreen} options={{ title: 'Happy Birthday Lyrics' }} />
       <Stack.Screen name="HowOldInput" component={InputAgeScreen} options={{ title: 'Enter Age' }} />
       <Stack.Screen name="HowOldLyrics" component={HowOldLyricsScreen} options={{ title: 'How Old Are You Now Lyrics' }} />
@@ -83,8 +97,13 @@ function StackNav() {
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
+  name: React.ComponentProps<typeof Feather>['name'];
   color: string;
+  onPress: () => void
 }) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+  return (
+    <TouchableOpacity hitSlop={{top: 50, left: 50, bottom: 50, right: 50}} onPress={props.onPress}>
+      <Feather size={30} style={{ marginBottom: -3 }} {...props} />
+    </TouchableOpacity>
+  );
 }

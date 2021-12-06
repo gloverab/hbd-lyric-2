@@ -7,11 +7,13 @@ const alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P
 
 export default function Calculations() {
   const [showAge, setShowAge] = useState(false)
-  const [showFiguringOut, setShowFiguringOut] = useState(false)
   const [showPrecision, setShowPrecision] = useState(false)
   const [showGenerating, setShowGenerating] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showReadability, setShowReadability] = useState(false)
+  const [showVitalRecords, setShowVitalRecords] = useState(false)
+  const [showBackgroundCheck, setShowBackgroundCheck] = useState(false)
+  const [showBirthDatabase, setBirthDatabase] = useState(false)
   const [percentage, setPercentage] = useState(0)
   const [letter, setLetter] = useState('')
   const [optLetter, setOptLetter] = useState('')
@@ -43,12 +45,14 @@ export default function Calculations() {
   
   useEffect(() => {
     const letterInterval = setInterval(cycleLetters, 50)
-    setTimeout(generateLyrics, 2000)
     setTimeout(optimizeReadability, 1000)
+    setTimeout(generateLyrics, 2000)
     setTimeout(() => setShowAge(true), 3000)
-    setTimeout(() => setShowFiguringOut(true), 3500)
-    setTimeout(() => setShowPrecision(true), 3700)
-    setTimeout(() => setShowSuccess(true), 4000)
+    setTimeout(() => setShowPrecision(true), 3300)
+    setTimeout(() => setShowVitalRecords(true), 3900)
+    setTimeout(() => setShowBackgroundCheck(true), 5100)
+    setTimeout(() => setBirthDatabase(true), 5800)
+    setTimeout(() => setShowSuccess(true), 7000)
     return () => {
       clearInterval(letterInterval)
     }
@@ -72,11 +76,17 @@ export default function Calculations() {
         {showAge && <View style={styles.row}>
           <Text>Determining Age...</Text>
         </View>}
-        {showFiguringOut && <View style={styles.row}>
-          <Text>Figuring it out...</Text>
-        </View>}
         {showPrecision && <View style={styles.row}>
           <Text>Bettering Precision...</Text>
+        </View>}
+        {showVitalRecords && <View style={styles.row}>
+          <Text>Accessing Vital Records...</Text>
+        </View>}
+        {showBackgroundCheck && <View style={styles.row}>
+          <Text>Background Check...</Text>
+        </View>}
+        {showBirthDatabase && <View style={styles.row}>
+          <Text>Connecting to national birth registrar...</Text>
         </View>}
         {showSuccess && <View style={styles.row}>
           <Text style={styles.success}>Success!</Text>

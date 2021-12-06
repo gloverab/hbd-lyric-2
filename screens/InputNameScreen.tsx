@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { useCallback, useEffect, useReducer, useState } from 'react';
-import { Image, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, StyleSheet, TextInput, TouchableOpacity, Keyboard, View as NativeView } from 'react-native';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { Image, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, StyleSheet, TextInput, TouchableOpacity, Keyboard, View as NativeView, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Button from '../components/Button';
 import Calculations from '../components/Calculations';
 import ModifierButtons from '../components/ModifierButtons';
 import { useCustomContext } from '../components/reducers/main';
@@ -64,44 +65,42 @@ export default function InputNameScreen({ navigation }: RootTabScreenProps<'TabO
     setTimeout(() => {
       setShowCalculations(false)
       navigation.navigate('BirthdayLyrics')
-    }, 5000)
+    }, 8000)
   }, [text])
+
+
+  
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView style={styles.keyboardAvoid}  behavior="padding">
-
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.topSection}>
-            <Text style={styles.title}>Happy Birthday Lyric Generator 2.0</Text>
-            <View style={styles.spacerV} />
-            <Image
-              style={styles.image}
-              source={require('../assets/images/birthday-cake.png')}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-
-        <View style={styles.touchable}>
-          <View style={styles.inputWrapper}>
-            <Text>Enter a Name:</Text>
-            <TextInput
-              onChangeText={setText}
-              style={styles.input}
-              placeholder={`Ex. "${name}"`}
-              value={text}
-            />
-          </View>
-          <View style={styles.spacerV} />
-          <ModifierButtons />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.topSection}>
+          <Image style={styles.image} source={require('../assets/images/birthday-cake.png')} />
         </View>
-       
-        <TouchableOpacity disabled={text == ''} onPress={handleSubmit} style={keyboardShowing ? styles.fullWidthSubmit : styles.submit}>
-          <Text style={styles.submitText}>Generate Lyrics</Text>
-        </TouchableOpacity>
+      </TouchableWithoutFeedback>
+      <View style={{ alignSelf: 'stretch', marginBottom: 20 }}>
+        <ModifierButtons />
+      </View>
+
+      <KeyboardAvoidingView style={{ alignSelf: 'stretch', flex: 1, justifyContent: 'space-between' }} behavior='padding' keyboardVerticalOffset={100}>
+        <View>
+          <Text>Enter a Name:</Text>
+          <TextInput
+            onChangeText={setText}
+            style={styles.input}
+            placeholder={`Ex. "${name}"`}
+            value={text}
+          />
+        </View>
+
+        <Button
+          disabled={text === ''}
+          keyboardShowing={keyboardShowing}
+          onClick={handleSubmit}
+        />
         
       </KeyboardAvoidingView>
-      
+
       {showCalculations && <Calculations />}
     </SafeAreaView>
   );
@@ -110,67 +109,44 @@ export default function InputNameScreen({ navigation }: RootTabScreenProps<'TabO
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 40
-  },
-  keyboardAvoid: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'space-between',
+    // backgroundColor: 'blue',
+    paddingHorizontal: 20
   },
   topSection: {
     flex: 1,
-    width: '100%',
+    alignSelf: 'stretch',
     alignItems: 'center',
-    paddingBottom: 20
+    marginBottom: 20
   },
   touchable: {
     flex: 1,
-    width: '100%',
     alignItems: 'center',
   },
   scrollable: {
     alignItems: 'center'
   },
   image: {
+    flex: 1,
     resizeMode: 'contain',
-    height: 250
+    width: '100%'
   },
   input: {
     fontSize: 24,
     borderColor: 'white',
     borderWidth: 1,
     padding: 10,
-    width: '100%',
     color: 'white'
   },
   inputWrapper: {
-    width: '100%'
+    width: '100%',
+    marginBottom: 20
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center'
-  },
-  submit: {
-    width: '100%',
-    backgroundColor: 'green',
-    alignItems: 'center',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 60
-  },
-  fullWidthSubmit: {
-    width: '120%',
-    backgroundColor: 'green',
-    alignItems: 'center',
-    padding: 10
-  },
-  submitText: {
-    fontSize: 24
   },
   spacerV: {
     height: 20

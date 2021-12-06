@@ -15,7 +15,7 @@ export default function ModifierButtons() {
   }, [])
 
   return (
-    <View>
+    <View style={{ alignSelf: 'stretch' }}>
       <View style={styles.labelRow}>
         <Text>Choose a Modifier (optional)</Text>
         {(globalState.chacha || globalState.monkey || globalState.spanish || globalState.manyMore) &&
@@ -58,7 +58,6 @@ export default function ModifierButtons() {
 
 const styles = StyleSheet.create({
   row: {
-    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around'
   },
